@@ -77,13 +77,16 @@ def standardise_spectrum(spectrum: np.ndarray, standard_wavenumbers: np.ndarray,
 
     return standardised_spectrum
 
-def standardise_spectra_with_reference(spectra: dict[str, np.ndarray], reference_spectrum: np.ndarray, standardisation_method="highest_peak") -> tuple[np.ndarray, dict[str, np.ndarray]]:
+def standardise_spectra_with_reference(spectra: dict[str, np.ndarray], reference_spectrum: np.ndarray, standardisation_method="highest_peak", bounds=None) -> tuple[np.ndarray, dict[str, np.ndarray]]:
     """
     Standardises the reference and computational spectra to a common set of wavenumbers and a common intensity scale.
     """
 
     # Find the lowest and largest wavenumbers across all spectra
-    min_wavenumber, max_wavenumber = get_wavenumber_bounds(spectra, reference_spectrum=reference_spectrum)
+    if bounds is not None:
+        min_wavenumber, max_wavenumber = bounds
+    else:
+        min_wavenumber, max_wavenumber = get_wavenumber_bounds(spectra, reference_spectrum=reference_spectrum)
     # Generate a standard set of wavenumbers using the finest resolution of all spectra
     standard_wavenumbers = get_standard_wavenumbers(spectra, min_wavenumber, max_wavenumber, reference_spectrum=reference_spectrum)
 
